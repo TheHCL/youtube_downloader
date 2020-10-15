@@ -66,8 +66,8 @@ def uhd_mp4(url):
     temp_mp4 = "temp.mp4"
     temp_mp3 = "temp.mp3"
     video=yt.streams.first()
-    video.download()  #360p mp4 download
-    os.rename(yt.title+".mp4",temp_mp4)
+    video.download(filename="temptemp")  #360p mp4 download
+    os.rename("temptemp.mp4",temp_mp4)
     mp4_360P = VideoFileClip(temp_mp4)
     mp4_360P.audio.write_audiofile(temp_mp3)  # change the 360p mp4 file to mp3 
     mp4_360P.close()
@@ -79,15 +79,16 @@ def uhd_mp4(url):
         return None
     video = uhd.first()
     print("Download 4k video")
-    video.download()  # 2160P webm download
+    video.download(filename="temptemp")  # 2160P webm download
     end1=time.time()
     print("Download complete\n")
     print("================================\n"+ str(end1-start1))
     #=======================================================#
-    os.rename(yt.title+".webm","temp.webm")
+    os.rename("temptemp.webm","temp.webm")
     print("rename OK\n\n\n\n\n\n")
     start2= time.time()
     os.system("ffmpeg -i temp.webm -i temp.mp3 -map 0:v -map 1:a -c:v h264 -c:a ac3 -s 3840x2160 output.mp4")
+    #ffmpeg -hwaccel cuvid -c:v h264_cuvid -i 0.mp4 -c:v h264_nvenc -y 00.mp4
     os.rename("output.mp4",name)
     os.remove("temp.webm")
     print("Convert Done.")
