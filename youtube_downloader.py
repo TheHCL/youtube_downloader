@@ -23,8 +23,9 @@ def progress(stream, chunk, bytes_remaining):
     print('\r' + '[Download progress]:[%s%s]%.2f%%;' % (
     '█' * int(size*20/contentSize), ' '*(20-int(size*20/contentSize)), float(size/contentSize*100)), end='')
 
-def fhd_mp4(url):   # download Full HD video on youtube
+def fhd_mp4(url,nv):   # download Full HD video on youtube
     os.chdir(mp4_loc)
+    start1 = time.time()
     yt = YouTube(url,on_progress_callback=progress) #url
     name = "[FHD]"+yt.title+".mp4"
     name = check_name(name)
@@ -44,20 +45,31 @@ def fhd_mp4(url):   # download Full HD video on youtube
         return None
     video = full_hd.first()
     print("Download Full HD Video.")
+    start_d = time.time()
     video.download(filename="temptemp")  # 1080p mp4 download
+    end1 = time.time()
     print("Download complete\n")
     #=============================================================#
     os.rename("temptemp.mp4",temp_mp4)
     print("Converting files.")
-    os.system("ffmpeg -i temp.mp4 -i temp.mp3 -map 0:v -map 1:a -c:v h264 -c:a ac3 -s 1920x1080 output.mp4")
+    start2 = time.time()
+    if nv=="y":
+        os.system("ffmpeg -hwaccel cuvid -i temp.mp4 -i temp.mp3 -map 0:v -map 1:a -c:v h264_nvenc -c:a ac3 -b:v 12M output.mp4")
+    if nv=="n":
+        os.system("ffmpeg -i temp.mp4 -i temp.mp3 -map 0:v -map 1:a -c:v h264 -c:a ac3 -s 1920x1080 output.mp4")
     #=============================================================#
     os.remove(temp_mp4)
     os.remove(temp_mp3)
     os.rename("output.mp4",name)
+    end2 = time.time()
     print("Convert Done.")
+    print("\n\n\n1080P video downlaod time : "+str(round((end1-start_d),2))+"secs.\n")
+    print("Compliation : "+str(round((end2-start2),2))+"secs.\n")
+    print("Total time : "+str(round((end2-start1),2))+"secs.")
+    
 
 
-def uhd_mp4(url):
+def uhd_mp4(url,nv):
     start1=time.time()
     os.chdir(mp4_loc)
     yt = YouTube(url,on_progress_callback=progress) #url
@@ -79,6 +91,7 @@ def uhd_mp4(url):
         return None
     video = uhd.first()
     print("Download 4k video")
+    start_d = time.time()
     video.download(filename="temptemp")  # 2160P webm download
     end1=time.time()
     print("Download complete\n")
@@ -87,15 +100,19 @@ def uhd_mp4(url):
     os.rename("temptemp.webm","temp.webm")
     print("rename OK\n\n\n\n\n\n")
     start2= time.time()
-    os.system("ffmpeg -i temp.webm -i temp.mp3 -map 0:v -map 1:a -c:v h264 -c:a ac3 -s 3840x2160 output.mp4")
-    #ffmpeg -hwaccel cuvid -c:v h264_cuvid -i 0.mp4 -c:v h264_nvenc -y 00.mp4
+    if nv=="y":   #ffmpeg for NV or not
+        os.system("ffmpeg -hwaccel cuvid -i temp.webm -i temp.mp3 -map 0:v -map 1:a -c:v h264_nvenc -c:a ac3 -b:v 32M output.mp4") 
+    if nv=="n":
+        os.system("ffmpeg -i temp.webm -i temp.mp3 -map 0:v -map 1:a -c:v h264 -c:a ac3 -s 3840x2160 output.mp4") #cpu 
     os.rename("output.mp4",name)
     os.remove("temp.webm")
     print("Convert Done.")
     #======================================================================#
     os.remove(temp_mp3)
     end2= time.time()
-    print("Compliation : "+str(end2-start2)+"secs.")
+    print("\n\n\n4K video downlaod time : "+str(round((end1-start_d),2))+"secs.\n")
+    print("Compliation : "+str(round((end2-start2),2))+"secs.\n")
+    print("Total time : "+str(round((end2-start1),2))+"secs.")
 
 
 
@@ -105,10 +122,12 @@ dir_path= os.getcwd()+"\\mp4"
 if os.path.exists(dir_path):
     url = input("Please input URL:\t")
     res = input("1.FHD(1920*1080) 2.UHD(3840*2160):\t")
+    nv = input("NV Hardware accelerate?(y/n):\t")
+    nv = nv.lower()
     if res =="1":
-        fhd_mp4(url)
+        fhd_mp4(url,nv)
     if res =="2":
-        uhd_mp4(url)
+        uhd_mp4(url,nv)
     
 else:
     print("Directory Created.\nPlease re-run the script.")
