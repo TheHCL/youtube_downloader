@@ -119,15 +119,47 @@ def uhd_mp4(url,nv):
 
 
 dir_path= os.getcwd()+"\\mp4"
+url_path = os.getcwd()+"\\URL.txt"
 if os.path.exists(dir_path):
-    url = input("Please input URL:\t")
-    res = input("1.FHD(1920*1080) 2.UHD(3840*2160):\t")
-    nv = input("NV Hardware accelerate?(y/n):\t")
-    nv = nv.lower()
-    if res =="1":
-        fhd_mp4(url,nv)
-    if res =="2":
-        uhd_mp4(url,nv)
+    d_list = input("Download URLs in txt?(y/n):\t")
+    d_list = d_list.lower()
+    if d_list =="y":
+        if os.path.exists(url_path):
+            f = open("URL.txt","r")
+            nv = f.readline().rstrip("\n")
+            nv = nv.replace("NV Hardware accelerate?( y / n ) :","")
+            res = f.readline().rstrip("\n")
+            res = res.replace("1.FHD(1920*1080) 2.UHD(3840*2160):","")
+            tmp = f.readline() #===========Paste URL below========
+            tmp = f.readline() 
+            
+            while tmp:
+                url = tmp.rstrip("\n")
+                if res =="1":
+                    fhd_mp4(url,nv)
+                if res =="2":
+                    uhd_mp4(url,nv)
+                tmp = f.readline()
+            
+            f.close()
+            
+            
+        else:
+            f = open("URL.txt","w")
+            f.write("NV Hardware accelerate?( y / n ) :\n")
+            f.write("1.FHD(1920*1080) 2.UHD(3840*2160):\n")
+            f.write("===========Paste URL below========\n")
+            f.close()
+            print("Please paste your URL in URL.txt and re-run the script.")
+    if d_list =="n":
+        url = input("Please input URL:\t")
+        res = input("1.FHD(1920*1080) 2.UHD(3840*2160):\t")
+        nv = input("NV Hardware accelerate?(y/n):\t")
+        nv = nv.lower()
+        if res =="1":
+            fhd_mp4(url,nv)
+        if res =="2":
+            uhd_mp4(url,nv)
     
 else:
     print("Directory Created.\nPlease re-run the script.")
