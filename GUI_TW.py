@@ -96,10 +96,19 @@ def fhd_mp4(url,nv):   # download Full HD video on youtube
             time.sleep(2)
             print_to_gui("嘗試下載480P影片檔")
             f480 = yt.streams.filter(res="480p",type="video",file_extension="mp4")
-            video =f480.first()
-            print_to_gui("下載480P影片檔")
-            name = "[480P]"+yt.title+".mp4"
-            name = check_name(name)
+            if str(f480)=="[]":
+                print_to_gui("沒有480P影片檔可下載")
+                time.sleep(2)
+                print_to_gui("嘗試下載360P影片檔")
+                video=yt.streams.first()
+                print_to_gui("下載360P影片檔")
+                name = "[360P]"+yt.title+".mp4"
+                name = check_name(name)
+            else:
+                video =f480.first()
+                print_to_gui("下載480P影片檔")
+                name = "[480P]"+yt.title+".mp4"
+                name = check_name(name)
         else:    
             video = full_hd.first()
             print_to_gui("下載Full HD 影片中")
@@ -254,6 +263,7 @@ def print_to_gui(text_string):
 
 def restart_program():
     window.destroy()
+    window.quit()
     os.system("GUI_TW.exe")
 
 bad_chars = ['<','>',':','"','/','|','?','*',"!"]
