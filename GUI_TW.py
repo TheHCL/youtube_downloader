@@ -43,10 +43,12 @@ def yt2mp3(url,nv):
         name+=".mp3"
         mp4_ori=yt.streams.filter(type="audio",file_extension="mp4") # mp4 audio
         video=mp4_ori.first()
+
+        print(video)
         if str(video)=="[]":
             print_to_gui("沒有MP3檔可下載")
             return None
-        video.download(filename="temptemp")
+        video.download(filename="temptemp.mp4")
         if nv=="y":
             os.system("ffmpeg -hwaccel cuvid -i temptemp.mp4 -vn -acodec libmp3lame -q:a 0 temp.mp3")
         if nv=="n":
@@ -84,7 +86,7 @@ def fhd_mp4(url,nv):   # download Full HD video on youtube
         temp_mp4 = "temp.mp4"
         temp_mp3 = "temp.mp3"
         video=yt.streams.first()
-        video.download(filename="temptemp")  #360p mp4 download
+        video.download(filename="temptemp.mp4")  #360p mp4 download
         os.rename("temptemp.mp4",temp_mp4)
         mp4_360P = VideoFileClip(temp_mp4)
         mp4_360P.audio.write_audiofile(temp_mp3)  # change the 360p mp4 file to mp3 
@@ -161,7 +163,7 @@ def uhd_mp4(url,nv):
         temp_mp4 = "temp.mp4"
         temp_mp3 = "temp.mp3"
         video=yt.streams.first()
-        video.download(filename="temptemp")  #360p mp4 download
+        video.download(filename="temptemp.mp4")  #360p mp4 download
         os.rename("temptemp.mp4",temp_mp4)
         mp4_360P = VideoFileClip(temp_mp4)
         mp4_360P.audio.write_audiofile(temp_mp3)  # change the 360p mp4 file to mp3 
