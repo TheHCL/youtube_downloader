@@ -50,9 +50,11 @@ def yt2mp3(url,nv):
             return None
         video.download(filename="temptemp.mp4")
         if nv=="y":
-            os.system("ffmpeg -hwaccel cuvid -i temptemp.mp4 -vn -acodec libmp3lame -q:a 0 temp.mp3")
+            os.system("ffmpeg -hwaccel cuvid -i temptemp.mp4 -vn -acodec libmp3lame -b:a 320k temp.mp3")
+            
         if nv=="n":
-            os.system("ffmpeg -i temptemp.mp4 -vn -acodec libmp3lame -q:a 0 temp.mp3")
+            os.system("ffmpeg -i temptemp.mp4 -vn -acodec libmp3lame -b:a 320k temp.mp3")
+            
         os.remove("temptemp.mp4")
         os.rename("temp.mp3",name)
         del_from_list(url)
@@ -115,7 +117,7 @@ def fhd_mp4(url,nv):   # download Full HD video on youtube
             video = full_hd.first()
             print_to_gui("下載Full HD 影片中")
         
-        video.download(filename="temptemp")  # 1080p mp4 download
+        video.download(filename="temptemp.mp4")  # 1080p mp4 download
         
         
         #=============================================================#
@@ -177,7 +179,7 @@ def uhd_mp4(url,nv):
         video = uhd.first()
         print_to_gui("4K影片下載中")
         start_d = time.time()
-        video.download(filename="temptemp")  # 2160P webm download
+        video.download(filename="temptemp.mp4")  # 2160P webm download
         end1=time.time()
         print_to_gui("4K影片下載完成")
         #=======================================================#
